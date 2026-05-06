@@ -83,13 +83,7 @@ class _HomePageState extends State<HomePage> {
       // key -> Identificador unico
       key: Key(band.id),
       direction: DismissDirection.startToEnd,
-      onDismissed: (direction) {
-        print(direction);
-        print(band.id);
-        // emitir -> delete-band
-        // {'id': band.id}
-        socketService.emit('delete-band', {'id': band.id});
-      },
+      onDismissed: (_) => socketService.emit('delete-band', {'id': band.id}),
       background: Container(
         padding: EdgeInsets.only(left: 8.0),
         color: Colors.red,
@@ -105,10 +99,8 @@ class _HomePageState extends State<HomePage> {
         ),
         title: Text(band.name),
         trailing: Text('${band.votes}', style: TextStyle(fontSize: 20)),
-        onTap: () {
-          // enviar id al backend para incrementar el valor +1
-          socketService.socket.emit('vote-band', {'id': band.id});
-        },
+        // enviar id al backend para incrementar el valor +1
+        onTap: () => socketService.socket.emit('vote-band', {'id': band.id}),
       ),
     );
   }
@@ -119,7 +111,7 @@ class _HomePageState extends State<HomePage> {
     if (Platform.isAndroid) {
       return showDialog(
         context: context,
-        builder: (context) {
+        builder: (_) {
           return AlertDialog(
             title: const Text('new Band name:'),
             content: TextField(controller: textController),
@@ -141,7 +133,7 @@ class _HomePageState extends State<HomePage> {
       context: context,
       builder: (_) {
         return CupertinoAlertDialog(
-          title: const Text('new Band name:'),
+          title: const Text('New Band name:'),
           content: CupertinoTextField(controller: textController),
           actions: <Widget>[
             CupertinoDialogAction(
