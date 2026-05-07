@@ -199,7 +199,8 @@ class _HomePageState extends State<HomePage> {
       Colors.yellow[200]!,
     ];
     return dataMap.isNotEmpty
-        ? SizedBox(
+        ? Container(
+            padding: const EdgeInsets.only(top: 10),
             width: double.infinity,
             height: 200,
             child: PieChart(
