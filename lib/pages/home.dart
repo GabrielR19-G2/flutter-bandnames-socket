@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:pie_chart/pie_chart.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 
@@ -63,9 +64,18 @@ class _HomePageState extends State<HomePage> {
           ),
         ],
       ),
-      body: ListView.builder(
-        itemCount: bands.length,
-        itemBuilder: (context, i) => bandTile(bands[i]),
+      body: Column(
+        children: [
+          _showGraph(),
+
+          // expanded -> toma todo el espacio disponible en base a la columna
+          Expanded(
+            child: ListView.builder(
+              itemCount: bands.length,
+              itemBuilder: (context, i) => bandTile(bands[i]),
+            ),
+          ),
+        ],
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: addNewBand,
@@ -171,5 +181,50 @@ class _HomePageState extends State<HomePage> {
       // setState(() {});
     }
     Navigator.pop(context);
+  }
+
+  /// Mostrar grafica
+  Widget _showGraph() {
+    Map<String, double> dataMap = new Map();
+    // dataMap.putIfAbsent('flutter', () => 5);
+    for (var band in bands) {
+      dataMap.putIfAbsent(band.name, () => band.votes.toDouble());
+    }
+    final List<Color> colorList = <Color>[
+      Colors.blue[50]!,
+      Colors.blue[200]!,
+      Colors.pink[50]!,
+      Colors.pink[200]!,
+      Colors.yellow[50]!,
+      Colors.yellow[200]!,
+    ];
+    return dataMap.isNotEmpty
+        ? SizedBox(
+            width: double.infinity,
+            height: 200,
+            child: PieChart(
+              dataMap: dataMap,
+              animationDuration: Duration(milliseconds: 800),
+              chartLegendSpacing: 32,
+              // chartRadius: MediaQuery.of(context).size.width / 3.2,
+              colorList: colorList,
+              // initialAngleInDegree: 0,
+              chartType: ChartType.disc,
+
+              // centerText: "bands",
+              legendOptions: LegendOptions(
+                showLegendsInRow: false,
+                legendPosition: LegendPosition.right,
+                showLegends: true,
+              ),
+              chartValuesOptions: ChartValuesOptions(
+                showChartValueBackground: true,
+                showChartValues: true,
+                showChartValuesOutside: false,
+                decimalPlaces: 0,
+              ),
+            ),
+          )
+        : CircularProgressIndicator.adaptive();
   }
 }
